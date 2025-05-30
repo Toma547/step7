@@ -16,14 +16,26 @@ class ProductController extends Controller
     //　一覧表示
     public function index(Request $request)
     {
-        $query = Product::query();
+        $query = Product::with('company');
 
-    if ($request->filled('keyword')) {
-        $query->where('name', 'like', '%' . $request->keyword . '%');
-    }
+        if($request->filled('keyword')) {
+            $keyword = $request->keyword;
+            $query->where(function($q) use ($keyword) {
+                $q->where('product_name','like',"%{$keyword}%")
+                 ->orWhereHas('company',function($q2) use ($keyword){
+                    $q2->where('company_name','like',"%{$keyword}%");
+                 });
+            });
+        }
+
+        if($request->filled('company_id')) {
+            $query->where('company_id', $request->company_id);
+        }
 
     $products = $query->paginate(10);
-    return view('products.index', compact('products'));
+    $companies = \App\Models\Company::all();
+
+    return view('products.index', compact('products', 'companies'));
     }
 
     /**

@@ -2,27 +2,38 @@
 
 @section('content')
 <div class="container">
-    <h1>新規商品登録</h1>
+    <h1>新規商品登録画面</h1>
 
     <form action="{{ route('products.store') }}" method="POST">
         @csrf
         <div>
-            <label>商品名：</label>
-            <input type="text" name="name" value="{{ old('name') }}">
+            <label>商品名<span style="color: red">*</span>：</label>
+            <input type="text" name="product_name" value="{{ old('name') }}">
         </div>
         <div>
-            <label>説明：</label>
-            <textarea name="description">{{ old('description') }}</textarea>
+            <label>メーカー名<span style="color: red">*</span>：</label>
+            <input type="text" name="company_name" value="{{ old('name') }}">
         </div>
         <div>
-            <label>価格：</label>
+            <label>価格<span style="color: red">*</span>：</label>
             <input type="number" name="price" value="{{ old('price') }}">
         </div>
         <div>
-            <label>在庫数：</label>
+            <label>在庫数<span style="color: red">*</span>：</label>
             <input type="number" name="stock" value="{{ old('stock') }}">
         </div>
-        <button type="submit">登録</button>
+        <div>
+            <label>コメント：</label>
+            <textarea name="description">{{ old('description') }}</textarea>
+        </div>
+        <div>
+            <label>商品画像：</label>
+            <input type="file" name="image">
+        </div>
+        <button type="submit">新規登録</button>
+        <a href="{{ route('products.index') }}">
+            <button type="button" style="margin-left: 10px; margin-top: 10px;">戻る</button>
+        </a>
     </form>
 </div>
 @endsection
