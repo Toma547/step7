@@ -68,7 +68,7 @@ class ProductController extends Controller
     // 登録処理
     public function store(StoreProductRequest $request)
     {
-    $validated = $request->validate();
+    $validated = $request->validated();
 
     DB::beginTransaction();
 
