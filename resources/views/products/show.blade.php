@@ -16,9 +16,7 @@
     <p><strong>メーカー：</strong> {{ $product->company->company_name ?? 'メーカー不明' }}</p>
     <p><strong>価格：</strong> {{ $product->price }} 円</p>
     <p><strong>在庫数：</strong> {{ $product->stock }}本</p>
-    <p><strong>コメント：</strong>
-         <textarea name="description">{{ old('description', $product->description) }}</textarea>
-    </p>
+    <p><strong>コメント：</strong> {{ $product->description }}</p>
 
     <a href="{{ route('products.edit', $product->id) }}">
         <button type="submit">編集</button>

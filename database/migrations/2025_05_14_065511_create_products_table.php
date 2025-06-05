@@ -19,8 +19,8 @@ return new class extends Migration
             $table->string('product_name');
             $table->unsignedBigInteger('price');
             $table->unsignedBigInteger('stock');
-            $table->text('comment')->nullable();
-            $table->string('img_path')->nullable();
+            $table->text('description')->nullable();
+            $table->string('image_path')->nullable();
             $table->timestamps();
         });
     }

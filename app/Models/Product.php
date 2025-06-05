@@ -9,7 +9,13 @@ use App\Models\Company;
 class Product extends Model
 {
     use HasFactory;
-    protected $fillable = ['image','name', 'price', 'stock', 'company_id','description'];
+    protected $fillable = [
+        'product_name',
+        'company_id',
+        'description',
+        'price',
+        'stock',
+        'image_path',];
     public function company()
     {
         return $this->belongsTo(Company::class);

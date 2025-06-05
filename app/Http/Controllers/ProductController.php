@@ -2,12 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreProductRequest;
+use App\Http\Requests\UpdateProductRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Models\Product;
+use App\Models\Company;
 
 
 class ProductController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -46,7 +55,8 @@ class ProductController extends Controller
     // 登録画面表示
     public function create()
     {
-        return view('products.create');
+        $companies = Company::all();
+        return view('products.create', compact('companies'));
     }
 
     /**
@@ -56,22 +66,28 @@ class ProductController extends Controller
      * @return \Illuminate\Http\Response
      */
     // 登録処理
-    public function store(Request $request)
+    public function store(StoreProductRequest $request)
     {
-        $validated = $request->validate([
-        'name' => 'required|string|max:255',
-        'price' => 'required|integer|min:0',
-        'stock' => 'required|integer|min:0',
-    ]);
+    $validated = $request->validate();
 
-    Product::create($validated);
+    DB::beginTransaction();
 
-    return redirect()->route('products.index')->with('success', '商品を登録しました');
+    try {
+        if ($request->hasFile('image')) {
+            $validated['image_path'] = $request->file('image')->store('public/images');
+        }
+
+        Product::create($validated);
+
+        DB::commit();
+        return redirect()->route('products.index')->with('success', '商品を登録しました');
+    } catch (\Exception $e) {
+        DB::rollBack();
+        return back()->withInput()->with('error', '商品登録中にエラーが発生しました: ' . $e->getMessage());
     }
-    public function __construct()
-{
-    $this->middleware('auth');
 }
+
+
     /**
      * Display the specified resource.
      *
@@ -91,9 +107,12 @@ class ProductController extends Controller
      * @return \Illuminate\Http\Response
      */
     // 編集画面表示
-    public function edit(Product $product)
+    public function edit($id)
     {
-        return view('products.edit', compact('product'));
+        $product = Product::findOrFail($id);
+        $companies = Company::all();
+
+        return view('products.edit', compact('product', 'companies'));
     }
 
     /**
@@ -103,17 +122,27 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Product $product)
+    public function update(UpdateProductRequest $request, Product $product)
     {
-         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'price' => 'required|integer|min:0',
-            'stock' => 'required|integer|min:0',
-        ]);
+         $validated = $request->validated();
 
-        $product->update($validated);
-        return redirect()->route('products.index')->with('success', '商品を更新しました');
+         DB::beginTransaction();
+
+        try{
+
+        if($request->hasFile('image')) {
+            $validated['image_path'] = $request->file('image')->store('public/images');
+        }
+
+        $product->fill($validated)->save();
+
+        DB::commit();
+        return redirect()->route('products.index', $product->id)->with('success', '商品を更新しました');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->withInput()->with('error', '商品更新中にエラーが発生しました: ' . $e->getMessage());
+       }
     }
 
     /**
@@ -125,8 +154,16 @@ class ProductController extends Controller
     // 削除処理
     public function destroy(Product $product)
     {
-        $product->delete();
+        DB::beginTransaction();
+
+        try {
+            $product->delete();
+
+        DB::commit();
         return redirect()->route('products.index')->with('success', '商品を削除しました');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', '商品削除中にエラーが発生しました: ' . $e->getMessage());
+        }
     }
 }
-
