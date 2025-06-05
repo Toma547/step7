@@ -59,8 +59,8 @@
 
         <div>
             <label>コメント：</label>
-            <textarea name="description">{{ old('description') }}</textarea>
-            @error('description')
+            <textarea name="comment">{{ old('comment', $product->comment ?? '') }}</textarea>
+            @error('comment')
               <div class="text-danger">{{ $message }}</div>
             @enderror    
         </div>
