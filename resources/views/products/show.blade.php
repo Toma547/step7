@@ -6,8 +6,8 @@
 
     <p><strong>ID：</strong> {{ $product->id }}</p>
     <p><strong>商品画像：</strong>
-           @if($product->image)
-            <img src="{{ asset('storage/' . $product->image) }}" alt="商品画像" width="150">
+           @if($product->image_path)
+            <img src="{{ asset(str_replace('public/', 'storage/', $product->image_path)) }}" alt="商品画像" style="max-width: 300px;">
         @else
             画像なし
         @endif

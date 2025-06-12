@@ -15,7 +15,7 @@
        </div>
     @endif   
 
-    <form action="{{ route('products.store') }}" method="POST">
+    <form action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
 
         <div>
@@ -73,10 +73,12 @@
             @enderror
         </div>
         
-        <button type="submit">新規登録</button>
-        <a href="{{ route('products.index') }}">
-            <button type="button" style="margin-left: 10px; margin-top: 10px;">戻る</button>
-        </a>
+        <div style="margin-top: 10px;">
+            <button type="submit">新規登録</button>
+            <a href="{{ route('products.index') }}">
+            <button type="button" style="margin-left: 10px;">戻る</button>
+            </a>
+        </div>      
     </form>
 </div>
 @endsection

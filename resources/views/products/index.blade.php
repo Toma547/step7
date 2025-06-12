@@ -43,8 +43,8 @@
         <tr>
             <td>{{ $product->id }}</td>
             <td>
-                @if($product->image)
-                 <img src="{{ asset('storage/' . $product->image) }}" alt="商品画像" width="50">
+                @if($product->image_path)
+                 <img src="{{ asset(str_replace('public/', 'storage/', $product->image_path)) }}" alt="商品画像" width="50">
                   @else
                      画像なし
                   @endif   

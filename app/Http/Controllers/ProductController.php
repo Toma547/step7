@@ -74,7 +74,8 @@ class ProductController extends Controller
 
     try {
         if ($request->hasFile('image')) {
-            $validated['image_path'] = $request->file('image')->store('public/images');
+            $path = $request->file('image')->store('images','public');
+            $validated['image_path'] = $path;
         }
 
         Product::create($validated);
