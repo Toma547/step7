@@ -69,11 +69,11 @@
 
         <div>
             <label>商品画像：</label>
-            @if($product->image_path)
-                <div>
-                    <img src="{{ asset(str_replace('public/', 'storage/', $product->image_path)) }}" alt="商品画像" style="max-width:  150px;">
-                </div>
-            @endif    
+            @if ($product->image_path)
+              <div>
+                 <img src="{{ asset(str_replace('public/', 'storage/', $product->image_path)) }}" alt="商品画像" style="max-width: 150px;">
+              </div>
+            @endif
             <input type="file" name="image">
             @error('image')
               <div class="text-danger">{{ $message }}</div>
