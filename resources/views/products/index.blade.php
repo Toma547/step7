@@ -39,9 +39,9 @@
          </tr>
         </thead>
         <tbody>
-        @foreach($products as $product)
+        @foreach($products as $index => $product)
         <tr>
-            <td>{{ $product->id }}</td>
+            <td>{{ $products->firstItem() +$index }}</td>
             <td>
                 @if($product->image_path)
                  <img src="{{ asset(str_replace('public/', 'storage/', $product->image_path)) }}" alt="商品画像" width="50">
