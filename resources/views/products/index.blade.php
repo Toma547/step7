@@ -4,7 +4,7 @@
 <div class="container">
     <h1>商品一覧</h1>
 
-    <form method="GET" action="{{ route('products.index') }}">
+    <form id="searchForm">
         <input type="text" name="keyword" placeholder="検索キーワード" value="{{ request('keyword') }}">
 
         <select name="company_id">
@@ -15,13 +15,21 @@
               </option> 
             @endforeach  
         </select>
+
+        <label>価格：</label>
+        <input type="number" name="min_price" placeholder="最小">
+        <input type="number" name="max_price" placeholder="最大">
+
+        <label>在庫数：</label>
+        <input type="number" name="min_stock" placeholder="最小">
+        <input type="number" name="max_stock" placeholder="最大">
+
         <button type="submit">検索</button>
     </form>
 
     <form action="{{ route('products.create') }}" method="GET" style="display:inline;">
         <button type="submit">新規商品登録</button>
     </form>
-
     @if(session('success'))
         <p style="color: green;">{{ session('success') }}</p>
     @endif
