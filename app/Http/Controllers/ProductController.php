@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Product;
 use App\Models\Company;
+use App\Models\Sale;
 
 
 class ProductController extends Controller
@@ -27,6 +28,7 @@ class ProductController extends Controller
     {
         $query = Product::with('company');
 
+        // キーワード検索（商品名 or メーカー名）
         if($request->filled('keyword')) {
             $keyword = $request->keyword;
             $query->where(function($q) use ($keyword) {
@@ -37,12 +39,40 @@ class ProductController extends Controller
             });
         }
 
+        // メーカー検索
         if($request->filled('company_id')) {
             $query->where('company_id', $request->company_id);
         }
 
+        // 価格範囲検索
+        if($request->filled('price_min')) {
+            $query->where('price', '>=', $request->price_min);
+        }
+        if($request->filled('price_max')) {
+            $query->where('price', '<=', $request->price_max);
+        }
+
+        // 在庫範囲検索
+        if($request->filled('stock_min')) {
+            $query->where('stock', '>=', $request->stock_min);
+        }
+        if($request->filled('stock_max')) {
+            $query->where('stock', '<=', $request->stock_max);
+        }
+
+        // ソート処理
+        $sortField = $request->get('sort_field', 'id');
+        $sortOrder = $request->get('sort_order', 'desc');
+        $query->orderBy($sortField, $sortOrder);
+
     $products = $query->paginate(10);
     $companies = \App\Models\Company::all();
+
+    // Ajaxによるリクエスト時は部分ビューを返す
+    if($request->ajax()) {
+        $html = view('products.partials.table_body', compact('products'))->render();
+        return response()->json(['html' => $html]);
+    }
 
     return view('products.index', compact('products', 'companies'));
     }
@@ -123,6 +153,8 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+
+     // 更新処理
     public function update(UpdateProductRequest $request, Product $product)
     {
          $validated = $request->validated();
@@ -161,9 +193,20 @@ class ProductController extends Controller
             $product->delete();
 
         DB::commit();
+
+        //Ajax対応
+        if(request()->ajax()) {
+            return response()->json(['success' => true]);
+        }
+
         return redirect()->route('products.index')->with('success', '商品を削除しました');
         } catch (\Exception $e) {
             DB::rollBack();
+
+            if(request()->ajax()) {
+                return response()->json(['error' => '削除に失敗しました'], 500);
+            }
+
             return back()->with('error', '商品削除中にエラーが発生しました: ' . $e->getMessage());
         }
     }

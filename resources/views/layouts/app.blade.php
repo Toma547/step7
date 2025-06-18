@@ -79,5 +79,7 @@
             @yield('content')
         </main>
     </div>
+    {{-- 本来は必要なJavaScriptをここで読み込む --}}
+    <script src="{{ asset('js/index.js') }}"></script>
 </body>
 </html>
