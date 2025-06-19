@@ -41,6 +41,7 @@
     <!-- ソート保持用 hidden -->
      <input type="hidden" id="sort_field" value="id">
      <input type="hidden" id="sort_order" value="desc">
+
      
      <!-- 商品一覧テーブル -->
      <table class="table table-borderred">

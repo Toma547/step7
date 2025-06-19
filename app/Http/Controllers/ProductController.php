@@ -61,19 +61,25 @@ class ProductController extends Controller
         }
 
         // ソート処理
-        $sortField = $request->get('sort_field', 'id');
-        $sortOrder = $request->get('sort_order', 'desc');
-        $query->orderBy($sortField, $sortOrder);
+        $sortField = $request->input('sort_field', 'id');
+        $sortOrder = $request->input('sort_order', 'desc');
 
-    $products = $query->paginate(10);
-    $companies = \App\Models\Company::all();
+        // ホワイトリストで安全に制限
+        $allowedSortFields = ['id', 'product_name', 'price', 'stock', 'company_id'];
+        if(in_array($sortField, $allowedSortFields)) {
+            $query->orderBy($sortField, $sortOrder);
+        }
+
+    $products = $query->paginate(10)->appends($request->all());
 
     // Ajaxによるリクエスト時は部分ビューを返す
     if($request->ajax()) {
-        $html = view('products.partials.table_body', compact('products'))->render();
-        return response()->json(['html' => $html]);
+        $view = view('products.partials.table_body', compact('products'))->render();
+        return response()->json(['html' => $view]);
     }
 
+    // 通常表示
+    $companies = Company::all();
     return view('products.index', compact('products', 'companies'));
     }
 

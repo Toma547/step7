@@ -2,17 +2,24 @@
 
 $(document).ready(function () {
     // 商品一覧の初期読み込み or 検索処理
-    $('form[action="' + window.location.pathname + '"]').on('submit', function (e) {
+    const $form = $('form[action="' + window.location.pathname + '"]');
+    const $productTableBody = $('#product-table-body');
+    
+    // 検索フォーム送信（非同期）
+    $form.on('submit', function (e) {
         e.preventDefault();
         fetchProducts();
     });
 
     // ソート機能（カラムヘッダクリック）
-    $('.sortable').on('click', function () {
-        const sortField = $(this).data('sort');
-        const currentOrder = $(this).data('order') || 'asc';
+    $(document).on('click', '.sortable', function () {
+        const $header = $(this);
+        const sortField = $header.data('sort');
+        const currentOrder = $header.data('order') || 'asc';
         const newOrder = currentOrder === 'asc' ? 'desc' : 'asc';
-        $(this).data('order', newOrder);
+        
+        $('.sortable').data('order', ''); //他カラムのソート状態をリセット
+        $header.data('order', newOrder);
 
         $('#sort_field').val(sortField);
         $('#sort_order').val(newOrder);
@@ -25,6 +32,8 @@ $(document).ready(function () {
         if (!confirm('削除しますか？')) return;
 
         const url = $(this).data('url');
+        const $row = $(this).closest('tr');
+
         $.ajax({
             url: url,
             type: 'POST',
@@ -33,7 +42,7 @@ $(document).ready(function () {
                 _token: $('meta[name="csrf-token"]').attr('content')
             },
             success: function () {
-                fetchProducts();
+                $row.fadeOut(300, function () { $(this).remove(); });
             },
             error: function () {
                 alert('削除に失敗しました。');
@@ -43,34 +52,40 @@ $(document).ready(function () {
 
     // 一覧取得処理（共通化）
     function fetchProducts() {
-        const keyword = $('input[name="keyword"]').val();
-        const companyId = $('select[name="company_id"]').val();
-        const priceMin = $('input[name="price_min"]').val();
-        const priceMax = $('input[name="price_max"]').val();
-        const stockMin = $('input[name="stock_min"]').val();
-        const stockMax = $('input[name="stock_max"]').val();
-        const sortField = $('#sort_field').val();
-        const sortOrder = $('#sort_order').val();
+        keyword: $('input[name="keyword"]').val();
+        company_id: $('select[name="company_id"]').val();
+        price_min: $('input[name="price_min"]').val();
+        price_max:  $('input[name="price_max"]').val();
+        stock_min: $('input[name="stock_min"]').val();
+        stock_max: $('input[name="stock_max"]').val();
+        sort_field: $('#sort_field').val();
+        sort_order: $('#sort_order').val();
 
         $.ajax({
             url: '/products',
             type: 'GET',
-            data: {
-                keyword: keyword,
-                company_id: companyId,
-                price_min: priceMin,
-                price_max: priceMax,
-                stock_min: stockMin,
-                stock_max: stockMax,
-                sort_field: sortField,
-                sort_order: sortOrder
-            },
+            data: params,
             success: function (res) {
-                $('#product-table-body').html(res.html);
+                $productTableBody.html(res.html);
+                updateSortIcons(); // ソートアイコンを更新
             },
             error: function () {
                 alert('一覧の取得に失敗しました。');
             }
         });
+    }
+
+    // ソートアイコン表示更新
+    function updateSortIcons() {
+        $('.sortable').each(function () {
+            const $header = $(this);
+            const order = $header.data('order');
+            $header.find('.sort-icon').remove(); // 一度全削除
+
+            if (order) {
+                const icon = order === 'asc' ? '▲' : '▼';
+                $header.append('<span class="sort-icon">' + icon + '</span>');
+            }
+        })
     }
 });
