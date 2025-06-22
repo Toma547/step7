@@ -1,6 +1,8 @@
+import $ from 'jquery';
 
+$(function () {
+    console.log('index.js 読み込み成功');
 
-$(document).ready(function () {
     // 商品一覧の初期読み込み or 検索処理
     const $form = $('form[action="' + window.location.pathname + '"]');
     const $productTableBody = $('#product-table-body');
@@ -52,14 +54,16 @@ $(document).ready(function () {
 
     // 一覧取得処理（共通化）
     function fetchProducts() {
-        keyword: $('input[name="keyword"]').val();
-        company_id: $('select[name="company_id"]').val();
-        price_min: $('input[name="price_min"]').val();
-        price_max:  $('input[name="price_max"]').val();
-        stock_min: $('input[name="stock_min"]').val();
-        stock_max: $('input[name="stock_max"]').val();
-        sort_field: $('#sort_field').val();
-        sort_order: $('#sort_order').val();
+        const params = {
+            keyword: $('input[name="keyword"]').val(),
+            company_id: $('select[name="company_id"]').val(),
+            price_min: $('input[name="price_min"]').val(),
+            price_max:  $('input[name="price_max"]').val(),
+            stock_min: $('input[name="stock_min"]').val(),
+            stock_max: $('input[name="stock_max"]').val(),
+            sort_field: $('#sort_field').val(),
+            sort_order: $('#sort_order').val(),
+        };
 
         $.ajax({
             url: '/products',
