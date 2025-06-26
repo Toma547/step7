@@ -45,19 +45,19 @@ class ProductController extends Controller
         }
 
         // 価格範囲検索
-        if($request->filled('price_min')) {
-            $query->where('price', '>=', $request->price_min);
+        if($request->filled('min_price')) {
+            $query->where('price', '>=', $request->min_price);
         }
-        if($request->filled('price_max')) {
-            $query->where('price', '<=', $request->price_max);
+        if($request->filled('max_price')) {
+            $query->where('price', '<=', $request->max_price);
         }
 
         // 在庫範囲検索
-        if($request->filled('stock_min')) {
-            $query->where('stock', '>=', $request->stock_min);
+        if($request->filled('min_stock')) {
+            $query->where('stock', '>=', $request->min_stock);
         }
-        if($request->filled('stock_max')) {
-            $query->where('stock', '<=', $request->stock_max);
+        if($request->filled('max_stock')) {
+            $query->where('stock', '<=', $request->max_stock);
         }
 
         // ソート処理
