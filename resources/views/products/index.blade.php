@@ -7,7 +7,7 @@
     <h1>商品一覧</h1>
 
     <!-- 検索フォーム -->
-    <form id="searchForm">
+    <form id="searchForm" action="{{ route('products.index') }}" method="GET">
         <input type="text" name="keyword" placeholder="検索キーワード" value="{{ request('keyword') }}">
 
         <select name="company_id">
@@ -20,12 +20,12 @@
         </select>
 
         <label>価格：</label>
-        <input type="number" name="min_price" placeholder="最小">
-        <input type="number" name="max_price" placeholder="最大">
+        <input type="number" name="min_price" placeholder="最小" value="{{ request('min_price') }}">
+        <input type="number" name="max_price" placeholder="最大" value="{{ request('max_price') }}">
 
         <label>在庫数：</label>
-        <input type="number" name="min_stock" placeholder="最小">
-        <input type="number" name="max_stock" placeholder="最大">
+        <input type="number" name="min_stock" placeholder="最小" value="{{ request('min_stock') }}">
+        <input type="number" name="max_stock" placeholder="最大" value="{{ request('max_stock') }}">
 
         <button type="submit">検索</button>
     </form>

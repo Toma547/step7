@@ -57,10 +57,10 @@ $(function () {
         const params = {
             keyword: $('input[name="keyword"]').val(),
             company_id: $('select[name="company_id"]').val(),
-            price_min: $('input[name="price_min"]').val(),
-            price_max:  $('input[name="price_max"]').val(),
-            stock_min: $('input[name="stock_min"]').val(),
-            stock_max: $('input[name="stock_max"]').val(),
+            price_min: $('input[name="min_price"]').val(),
+            price_max:  $('input[name="max_price"]').val(),
+            stock_min: $('input[name="min_stock"]').val(),
+            stock_max: $('input[name="max_stock"]').val(),
             sort_field: $('#sort_field').val(),
             sort_order: $('#sort_order').val(),
         };
