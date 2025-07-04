@@ -57,10 +57,10 @@ $(function () {
         const params = {
             keyword: $('input[name="keyword"]').val(),
             company_id: $('select[name="company_id"]').val(),
-            price_min: $('input[name="min_price"]').val(),
-            price_max:  $('input[name="max_price"]').val(),
-            stock_min: $('input[name="min_stock"]').val(),
-            stock_max: $('input[name="max_stock"]').val(),
+            min_price: $('input[name="min_price"]').val(),
+            max_price:  $('input[name="max_price"]').val(),
+            min_stock: $('input[name="min_stock"]').val(),
+            max_stock: $('input[name="max_stock"]').val(),
             sort_field: $('#sort_field').val(),
             sort_order: $('#sort_order').val(),
         };
@@ -70,10 +70,11 @@ $(function () {
             type: 'GET',
             data: params,
             success: function (res) {
-                $productTableBody.html(res.html);
+                $('#product-table-body').html(res.html);
                 updateSortIcons(); // ソートアイコンを更新
             },
-            error: function () {
+            error: function (xhr) {
+                console.error(xhr.responseText); //エラー内容表示
                 alert('一覧の取得に失敗しました。');
             }
         });
