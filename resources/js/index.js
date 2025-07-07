@@ -4,7 +4,7 @@ $(function () {
     console.log('index.js 読み込み成功');
 
     // 商品一覧の初期読み込み or 検索処理
-    const $form = $('form[action="' + window.location.pathname + '"]');
+    const $form = $('#searchForm');
     const $productTableBody = $('#product-table-body');
     
     // 検索フォーム送信（非同期）
