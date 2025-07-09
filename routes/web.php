@@ -27,7 +27,6 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/products/{product}/buy', [ProductController::class, 'purchase'])->name('products.purchase');
 
-    Route::get('/products/fetch', [ProductController::class, 'index'])->name('products.fetch');
 });
 
 Route::get('/', function () {

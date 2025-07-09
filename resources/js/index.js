@@ -66,7 +66,7 @@ $(function () {
         };
 
         $.ajax({
-            url: '/products',
+            url: '/step7/public/products',
             type: 'GET',
             data: params,
             success: function (res) {
